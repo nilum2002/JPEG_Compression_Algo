@@ -55,35 +55,25 @@ def channel_norm_chroma_sub_sampeling(img):
 
     return Y, Cr_sub, Cb_sub
 
-# helper function 
 def dct_8x8(block):
     """
     Compute the 2D DCT for one 8x8 level-shifted block.
     """
     block = np.asarray(block, dtype=np.float64)
 
-    if block.shape != (8, 8):
-        raise ValueError("Input block must be 8x8")
-
     result = np.zeros((8, 8), dtype=np.float64)
 
     for u in range(8):
         for v in range(8):
             total = 0.0
-
             for x in range(8):
                 for y in range(8):
                     total += (
-                        block[x, y]
-                        * np.cos((2 * x + 1) * u * np.pi / 16)
-                        * np.cos((2 * y + 1) * v * np.pi / 16)
-                    )
-
+                        block[x, y] * np.cos((2 * x + 1) * u * np.pi / 16)* np.cos((2 * y + 1) * v * np.pi / 16))
             cu = 1 / np.sqrt(2) if u == 0 else 1.0
             cv = 1 / np.sqrt(2) if v == 0 else 1.0
 
             result[u, v] = 0.25 * cu * cv * total
-
     return result
 
 def dct_channel(channel):
@@ -93,9 +83,6 @@ def dct_channel(channel):
     """
     channel = np.asarray(channel, dtype=np.float64)
     height, width = channel.shape
-
-    if height % 8 != 0 or width % 8 != 0:
-        raise ValueError("Channel dimensions must be multiples of 8")
 
     transformed = np.zeros_like(channel)
 
@@ -108,10 +95,14 @@ def dct_channel(channel):
 
 
 if __name__ == "__main__":
-
     # Read image
-    img = cv2.imread('original_24bpp.jpg')
-
+    img = cv2.imread('kodim23.png')
+    print(img.shape)
+    # Check for bbp value
+    num_channels = len(img.shape)
+    bits_per_channel = img.dtype.itemsize*8 # convert to bits
+    bpp = num_channels*bits_per_channel
+    print(f"Image has {bpp}\n")
 
     #########################################
     #        Color Space Conversion         #
@@ -124,5 +115,14 @@ if __name__ == "__main__":
     #######################################################
     Y, Cr, Cb = channel_norm_chroma_sub_sampeling(conversion_img)
     print("Image Conversion channel_norm_chroma_sub_sampeling Done!\n")
+
+    ####################
+    #     Apply DCT    #
+    ####################
+    Y_DCT = dct_channel(Y)
+    Cr_DCT = dct_channel(Cr)
+    Cb_DCT = dct_channel(Cb)
+    print(f"DCT applied Successfully")
+
 
 
