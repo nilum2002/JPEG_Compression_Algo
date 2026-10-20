@@ -6,7 +6,7 @@ Setup :
 ```
 git clone <repo_url>
 
-python -n venv .venv
+python -m venv .venv
 
 source .venv/bin/activate
 
