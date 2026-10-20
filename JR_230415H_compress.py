@@ -204,7 +204,7 @@ def build_huffman_table(symbols):
     """
     freq = Counter(symbols)
 
-    # Only one kind of symbol -> give it code "0"
+    # Only one kind of symbol , give it code "0"
     if len(freq) == 1:
         return {next(iter(freq)): "0"}
 
